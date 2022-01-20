@@ -1,0 +1,134 @@
+
+Algorithm:
+	•	Get the number of tracks and track sequence from user as ‘n’ and ‘tracks[i]’ respectively from user.
+	•	Get the header current position as ‘curr’ from user
+	•	Pass the values as parameters to the functions FCFS (First Come First Serve), SSTF (Shortest Seek Time First), SCAN.
+	•	First Come First Serve (FCFS)
+	•	Assign ‘curr’ to ‘prev’.
+
+	•	Calculate the Seek time ‘seektime’ for FCFS from the sequence as given using the below formula.
+seektime = seektime + abs(prev – tracks[i])
+	•	Insert the above formula in a for loop with the limit of ‘n’.
+	•	Display the Seek Time of FCFS.
+	•	Shortest Seek Time First (SSTF)
+	•	Initiate ‘min[n]’, ‘flag[n]’ variables.
+	•	Assign prev = curr
+	•	Find the shortest seek time from current header position to given track using the below formula
+	•	min[j] = abs(prev – tracks[j])
+	•	Insert the above formula in multiple for loop with limit of ‘n’.
+	•	After finding the shortest track, flag it as 1.
+	•	Then calculate the seek time using the below formula
+	•	seektime = seektime + min[i]
+	•	Insert the above formula in a for loop with limit of ‘n’.
+	•	Then display the seek time of SSTF
+	•	SCAN
+	•	Insert the tracks which is larger than track head position in an array ‘inctemp[n]’ & increase the ‘inc_count’ one by one while inserting track in the array
+	•	Insert the tracks which is smaller than track head position in another array ‘dectemp[n]’ & increase the ‘dec_count’ one by one while inserting track in the array
+	•	Sort the ‘intemp’ array as ascending order & ‘dectemp’ array in descending order.
+	•	Calculate the ‘seektime’ from current head position with ‘inctemp’ array by inserting the below formula in a for loop with limit of inc_count.
+	•	seektime = seektime + abs(prev - inctemp[i])
+	•	Calculate the ‘seektime’ from last head position with ‘decctemp’ array by inserting the below formula in a for loop with limit of dec_count.
+	•	seektime = seektime + abs(prev - dectemp[i])
+	•	Then display the seektime of SCAN.
+
+Program:
+File name: ex11_disksch.c #include<stdio.h> #include<stdlib.h>
+
+void fcfs(int n, int tracks[6], int curr)
+{
+int seektime=0; int prev;
+prev = curr;
+//calculating seektime by fcfs for(int i=0; i<n;i++)
+
+seektime = seektime + (abs(tracks[i] - prev)); prev= tracks[i];
+}
+printf("The seek time of FCFS is: %d\n", seektime);
+}
+
+void sstf(int n, int tracks[6], int curr)
+{
+int prev, seektime=0, min[6], flag[6], f; prev = curr;
+//initiating min & flag for(int i=0; i<n; i++)
+{
+flag[i] = 0;
+min[i] = 9999;
+}
+//finding minimum distance from current disk head for(int i=0; i<n; i++)
+{
+for(int j=0; j<n; j++)
+{
+if(flag[j]==0 && min[i]>(abs(prev-tracks[j])))
+{
+min[i] = abs(prev-tracks[j]); f = i;
+}
+}
+flag[f] = 1; //flag the reached track
+}
+//caculating seektime for(int i = 0; i<n; i++)
+{
+seektime = seektime + min[i];
+}
+printf("The seek time of SSTF is: %d\n", seektime);
+}
+
+void scan(int n, int tracks[6], int curr)
+{
+
+int seektime=0, inc_count=0, dec_count=0, temp, i, j, prev; int inctemp[n], dectemp[n];
+//inserting track numbers in array for(i=0; i<n; i++)
+{
+if(tracks[i]>curr)
+{
+inctemp[inc_count]= tracks[i]; inc_count++;
+}
+
+else
+{
+dectemp[dec_count]=tracks[i]; dec_count++;
+}
+}
+//sorting the tracks in ascending order for(i=0; i<inc_count; i++)
+{
+for(j=i+1; j<inc_count; j++)
+{
+if(inctemp[i]>inctemp[j])
+{
+temp = inctemp[i]; inctemp[i] = inctemp[j]; inctemp[j] = temp;
+}
+}
+}
+//sorting the tracks in descending order for(i=0; i<dec_count; i++)
+{
+for(j=i+1; j<dec_count; j++)
+{
+if(dectemp[i]<dectemp[j])
+{
+temp = dectemp[j]; dectemp[j] = dectemp[i]; dectemp[i] = temp;
+}
+}
+}
+//Calculating Seektime from current head position to one end of disk prev = curr;
+for(i=0; i<inc_count; i++)
+{
+seektime = seektime + abs(prev - inctemp[i]); prev = inctemp[i];
+}
+//Calculating Seektime from one end to another end of disk for(j=0; j<dec_count; j++)
+{
+seektime = seektime + abs(prev - dectemp[i]); prev = dectemp[i];
+}
+printf("The seektime of SCAN is: %d\n", seektime);
+}
+
+int main()
+
+int n, curr;
+printf("Enter Numberof tacks: "); scanf("%d", &n);
+int tracks[n];
+printf("Enter Track Number:\n"); for(int i=0; i<n; i++)
+{
+scanf("%d", &tracks[i]);
+}
+printf("\nEnter the current position of disk head is: "); scanf("%d", &curr);
+fcfs(n, tracks, curr); sstf(n, tracks, curr); scan(n, tracks, curr); printf("\n");
+return 0;
+}
